@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="BS9-tE-zLa" customClass="TrackCell" customModule="MusicPlay" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="120" height="185"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="120" height="185"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A7G-7F-IUX">
+                        <rect key="frame" x="5" y="5" width="110" height="175"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sample_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="Eh3-UZ-op1">
+                                <rect key="frame" x="0.0" y="0.0" width="110" height="140"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="140" id="JqF-oi-BUV"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist_Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k9e-97-68d">
+                                <rect key="frame" x="2" y="161.5" width="108" height="12.5"/>
+                                <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="10"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Track_Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fg0-WB-0VJ">
+                                <rect key="frame" x="2" y="144" width="108" height="13.5"/>
+                                <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="11"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="fg0-WB-0VJ" firstAttribute="top" secondItem="Eh3-UZ-op1" secondAttribute="bottom" constant="4" id="85D-Ep-Hkr"/>
+                            <constraint firstAttribute="trailing" secondItem="fg0-WB-0VJ" secondAttribute="trailing" id="Ay1-Cq-Bxs"/>
+                            <constraint firstItem="fg0-WB-0VJ" firstAttribute="leading" secondItem="A7G-7F-IUX" secondAttribute="leading" constant="2" id="EhO-oc-BSt"/>
+                            <constraint firstAttribute="trailing" secondItem="Eh3-UZ-op1" secondAttribute="trailing" id="KuH-78-sDj"/>
+                            <constraint firstItem="k9e-97-68d" firstAttribute="top" secondItem="fg0-WB-0VJ" secondAttribute="bottom" constant="4" id="lAU-hF-JsB"/>
+                            <constraint firstItem="k9e-97-68d" firstAttribute="leading" secondItem="A7G-7F-IUX" secondAttribute="leading" constant="2" id="m9D-Sa-Cvc"/>
+                            <constraint firstItem="Eh3-UZ-op1" firstAttribute="top" secondItem="A7G-7F-IUX" secondAttribute="top" id="neM-eB-axR"/>
+                            <constraint firstItem="Eh3-UZ-op1" firstAttribute="leading" secondItem="A7G-7F-IUX" secondAttribute="leading" id="nyl-JT-KTd"/>
+                            <constraint firstAttribute="trailing" secondItem="k9e-97-68d" secondAttribute="trailing" id="ziQ-ad-oa9"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="A7G-7F-IUX" secondAttribute="trailing" constant="5" id="7AG-vF-W3j"/>
+                <constraint firstItem="A7G-7F-IUX" firstAttribute="leading" secondItem="BS9-tE-zLa" secondAttribute="leading" constant="5" id="9Ah-ch-FCo"/>
+                <constraint firstAttribute="bottom" secondItem="A7G-7F-IUX" secondAttribute="bottom" constant="5" id="KsB-cn-qEN"/>
+                <constraint firstItem="A7G-7F-IUX" firstAttribute="top" secondItem="BS9-tE-zLa" secondAttribute="top" constant="5" id="NGk-CI-O89"/>
+            </constraints>
+            <size key="customSize" width="120" height="207"/>
+            <connections>
+                <outlet property="artistName" destination="k9e-97-68d" id="wlW-Xv-okd"/>
+                <outlet property="bgView" destination="A7G-7F-IUX" id="d3E-Iz-N5R"/>
+                <outlet property="coverImage" destination="Eh3-UZ-op1" id="3nw-Vp-FcR"/>
+                <outlet property="trackName" destination="fg0-WB-0VJ" id="D7o-Sf-khc"/>
+            </connections>
+            <point key="canvasLocation" x="65" y="136.5"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="sample_placeholder" width="64" height="64"/>
+    </resources>
+</document>
