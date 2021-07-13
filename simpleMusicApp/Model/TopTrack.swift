@@ -10,6 +10,15 @@ import Foundation
 class Tracks: NSObject {
     var headerTitle:String?
     var tracks:[TopTrack]?
+    
+    public override init() {
+        
+    }
+    
+    public init(_ headerTitle: String, _ tracks: [TopTrack]) {
+        self.headerTitle = headerTitle
+        self.tracks = tracks
+    }
 }
 
 class TopTrack: NSObject{

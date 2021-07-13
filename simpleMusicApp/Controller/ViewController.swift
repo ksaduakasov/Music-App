@@ -25,9 +25,11 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
     var topTrack = [TopTrack]()
     var audioPlayer:AVPlayer?
     var myTimer:Timer!
-    var sectionHeaders = ["Top Music","Hindi","English","Tamil","Punjabi"]
+    var sectionHeaders = ["All Music","English Category","Russian Category"]
     var tracks = [Tracks]()
     var isPlaying = true
+    var tempObj: TopTrack?
+    var tempArr = [TopTrack]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,20 +43,25 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
         trackPlayerView.isHidden = true
         loadJSON()
         addBlurToPlayer()
+        let gesture = UITapGestureRecognizer(target: self, action:  #selector (displayPlayer))
+        trackPlayerView.addGestureRecognizer(gesture)
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        audioPlayer?.pause()
+    }
+    
+    
     
     func customNavbar(){
         self.title = "MusicPlay"
-        UIApplication.shared.statusBarStyle = .lightContent
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor:UIColor.white,NSAttributedString.Key.font:UIFont(name: "Verdana-Bold", size: 15)!]
         
         self.navigationController?.navigationBar.tintColor = UIColor.white
         self.navigationController?.navigationBar.isTranslucent = false
         self.navigationController?.navigationBar.barTintColor = .red
-        let searchButton = UIBarButtonItem(image: UIImage(named:"search")!, style: .done, target: self, action: nil)
-        let menuButton =  UIBarButtonItem(image: UIImage(named:"menu")!, style: .done, target: self, action: nil)
-        self.navigationItem.leftBarButtonItem = menuButton
-        self.navigationItem.rightBarButtonItem = searchButton
+        let menuButton =  UIBarButtonItem(image: UIImage(systemName: "heart")!, style: .done, target: self, action: #selector(goToFav))
+        self.navigationItem.rightBarButtonItem = menuButton
     }
     
     func loadJSON(){
@@ -68,7 +75,6 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
             for k in 0..<sectionHeaders.count {
                 let otk = Tracks()
                 otk.headerTitle = sectionHeaders[k]
-                
                 
                 for i in items {
                     let data =  i as? [String:AnyObject]
@@ -85,10 +91,37 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
                     self.topTrack.append(object)
                     
                 }
-                otk.tracks =  self.topTrack
-                self.tracks.append(otk)
+                if k == 0 {
+                    self.tracks.append(Tracks(sectionHeaders[k], self.topTrack))
+                    print(self.tracks.count)
+                }
+                 else if k == 1 {
+                    for j in 0..<(self.topTrack.count) {
+                        if isLatin(string: (self.topTrack[j].trackName!)) {
+                            self.tempArr.append(self.topTrack[j])
+                        }
+                    }
+                    self.tracks.append(Tracks(sectionHeaders[k], self.tempArr))
+                    print(self.tracks.count)
+
+                }
+                  if k == 2 {
+                    for j in 0..<(self.topTrack.count) {
+                        if !isLatin(string: (self.topTrack[j].trackName!)) {
+                            self.tempArr.append(self.topTrack[j])
+                        }
+                    }
+                        self.tracks.append(Tracks(sectionHeaders[k], self.tempArr))
+                        print(self.tracks.count)
+
+                    print(self.tracks.count)
+
+                }
+
                 self.topTrack.removeAll()
+                self.tempArr.removeAll()
             }
+            
             
             self.tableView.reloadData()
             
@@ -97,17 +130,25 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
         }
     }
     
+    
     func playTrack(track:TopTrack){
+        
         tableView.contentInset =  UIEdgeInsets(top: 0, left: 0, bottom: playerBlur.frame.height, right: 0)
         trackPlayerView.isHidden = false
         let musicURL = URL(string:track.previewURL!)
-
         self.audioPlayer =  AVPlayer(url: musicURL!)
         self.audioPlayer?.play()
         playPauseButton.setImage(UIImage(named:"pause"), for: .normal)
         myTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateProgressBar), userInfo: nil, repeats: true)
         mTrackName.text = track.trackName!
         mArtistName.text = track.artistName!
+    }
+    
+    @objc func displayPlayer() {
+        let vc = storyboard?.instantiateViewController(identifier: "playerVC") as! PlayerViewController
+        
+        vc.setTrack(tempObj!)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func updateProgressBar(){
@@ -122,7 +163,6 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
             mDuration.text = String(format: "%02d:%02d", min,sec)
             let percent = (current/total)
             self.progressBar.setProgress(Float(percent), animated: true)
-            print("percent \(percent) - \(current) \(total)")
         }else{
             audioPlayer?.pause()
             print("paused")
@@ -138,14 +178,18 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
             isPlaying = true
             audioPlayer?.play()
             playPauseButton.setImage(UIImage(named:"pause"), for: .normal)
-            
+            print(topTrack)
         }else{
             isPlaying = false
             audioPlayer?.pause()
             playPauseButton.setImage(UIImage(named:"play"), for: .normal)
         }
         
-        
+    }
+    
+    @objc func goToFav() {
+        let vc = storyboard?.instantiateViewController(identifier: "favVC") as! FavouritesViewController
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }
@@ -163,13 +207,11 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! MusicCell
         if indexPath.row == 0{
-            cell.seeAllButton.isHidden = true
             cell.cellBg.backgroundColor = .red
             cell.sectionHeader.textColor = UIColor.white
             cell.sectionHeader.text = sectionHeaders[0]
             
         }else{
-            cell.seeAllButton.isHidden = false
             cell.sectionHeader.text = sectionHeaders[indexPath.row]
             cell.cellBg.backgroundColor = UIColor.white
             cell.sectionHeader.textColor = UIColor.black
@@ -211,8 +253,31 @@ extension ViewController: MusicCellProtocol {
         let k = tableView.indexPath(for: cell)
         //        self.tracks[k!.row].tracks?[indexPath.row]
         playTrack(track: (self.tracks[k!.row].tracks?[indexPath.row])!)
+        tempObj = ((self.tracks[k!.row].tracks?[indexPath.row])!)
+//        print(tempObj)
+        let obj = self.tracks[k!.row].tracks?[indexPath.row]
+        DispatchQueue.global().async { [] in
+            if let data = try? Data(contentsOf: NSURL(string:(obj!.artWork)!)! as URL) {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.mTrackImage.image = image
+                    }
+                }
+            }
+        }
         print("Location:\(k!.row) \(indexPath.row)")
     }
+    
+    
+    fileprivate func isLatin(string: String) -> Bool {
+        let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        let lower = "abcdefghijklmnopqrstuvwxyz"
+            let characters = Array(string)
+                if !upper.contains(characters[0]) && !lower.contains(characters[0]) {
+                    return false
+                }
+            return true
+        }
 }
 
 

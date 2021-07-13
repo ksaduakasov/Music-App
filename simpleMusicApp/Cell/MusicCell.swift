@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Kingfisher
+
 protocol MusicCellProtocol {
     func didTapSeeAll(cell:MusicCell,indexPath:IndexPath)
     func didTapOnTrack(cell:MusicCell,indexPath:IndexPath)
@@ -59,6 +61,7 @@ class MusicCell: UITableViewCell,UICollectionViewDataSource,UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
         return topTracks!.count
     }
     
@@ -67,19 +70,26 @@ class MusicCell: UITableViewCell,UICollectionViewDataSource,UICollectionViewDele
         
         
         let obj = topTracks?[indexPath.row]
+        let fileUrl = URL(string: (obj?.artWork)!)
         cell.artistName.text = obj!.artistName
         cell.trackName.text = obj!.trackName
+        
 //        cell.coverImage.image = UIImage(named: "\(String(describing: obj?.artWork))")
-
-        DispatchQueue.global().async { [] in
-            if let data = try? Data(contentsOf: NSURL(string:(obj?.artWork)!)! as URL) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        cell.coverImage.image = image
-                    }
-                }
-            }
-        }
+        cell.coverImage.kf.setImage(with:fileUrl)
+        
+        // MARK: cell image with GCD
+//        DispatchQueue.global().async { [] in
+//            if let data = try? Data(contentsOf: NSURL(string:(obj?.artWork)!)! as URL) {
+//                if let image = UIImage(data: data) {
+//                    DispatchQueue.main.async {
+//                        cell.coverImage.image = image
+//                    }
+//                }
+//            }
+//        }
+        
+        
+        
             //            cell.coverImage.setImageWithUrl(url: NSURL(string:(obj?.artWork)!)!)
             return cell
             
